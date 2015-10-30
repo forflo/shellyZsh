@@ -7,18 +7,18 @@ SL_BATTERY_THRESHOLD="60"
 declare -Ag SL_WSTATUS_BAT
 
 SL_WSTATUS_BAT=(
-	["enable"]=true
-	["foreground"]="$SL_FG_CYAN"
-	["background"]=""
-    ["format"]=""
-	["data"]=""
-	["oldval"]=""
-    ["triggered"]="true" # only if sl-notify-bat returned 0
-    ["delimiter"]="[]"
-    ["del_foreground"]="$SL_FG_GREEN"
-    ["del_background"]=""
-    ["trigger"]="false" # set to true if data and oldval changed
-    ["del_format"]=""
+	enable "true"
+	foreground "$SL_FG_CYAN"
+	background ""
+    format ""
+	data ""
+	oldval ""
+    triggered "true" # only if sl-notify-bat returned 0
+    delimiter "[]"
+    del_foreground "$SL_FG_GREEN"
+    del_background ""
+    trigger "false" # set to true if data and oldval changed
+    del_format ""
 )
 
 ## 
@@ -26,9 +26,9 @@ SL_WSTATUS_BAT=(
 # and 1 if not
 sl-notify-bat(){
 	[ "${SL_WSTATUS_BAT[oldval]}" != "${SL_WSTATUS_BAT[data]}" ] && {
-		SL_WSTATUS_BAT["oldval"]=${SL_WSTATUS_BAT["data"]}		
-		SL_WSTATUS_BAT["trigger"]="true"
-	} || SL_WSTATUS_BAT["trigger"]="false"
+		SL_WSTATUS_BAT[oldval]=${SL_WSTATUS_BAT[data]}		
+		SL_WSTATUS_BAT[trigger]="true"
+	} || SL_WSTATUS_BAT[trigger]="false"
 }
 
 ##
@@ -39,31 +39,31 @@ sl-setdata-bat(){
     local percent=$(sl-lp-battery)
 
     [ $ret = 4 ] && {
-	    SL_WSTATUS_BAT["enable"]=false
+	    SL_WSTATUS_BAT[enable]=false
     }
 
     [ $ret = 3 ] && {
-        SL_WSTATUS_BAT["enable"]=true
-        SL_WSTATUS_BAT["data"]="$SL_CHARGING${percent}%"
-        SL_WSTATUS_BAT["foreground"]=$SL_FG_GREEN
+        SL_WSTATUS_BAT[enable]=true
+        SL_WSTATUS_BAT[data]="$SL_CHARGING${percent}%"
+        SL_WSTATUS_BAT[foreground]=$SL_FG_GREEN
     }
 
     [ $ret = 2 ] && {
-        SL_WSTATUS_BAT["enable"]=true
-        SL_WSTATUS_BAT["data"]="$SL_CHARGING${percent}%"
-        SL_WSTATUS_BAT["foreground"]=$SL_FG_RED
+        SL_WSTATUS_BAT[enable]=true
+        SL_WSTATUS_BAT[data]="$SL_CHARGING${percent}%"
+        SL_WSTATUS_BAT[foreground]=$SL_FG_RED
     }
 
     [ $ret = 1 ] && {
-        SL_WSTATUS_BAT["enable"]=true
-        SL_WSTATUS_BAT["data"]="$SL_DISCHARGING${percent}%"
-        SL_WSTATUS_BAT["foreground"]=$SL_FG_GREEN
+        SL_WSTATUS_BAT[enable]=true
+        SL_WSTATUS_BAT[data]="$SL_DISCHARGING${percent}%"
+        SL_WSTATUS_BAT[foreground]=$SL_FG_GREEN
     }
 
     [ $ret = 0 ] && {
-        SL_WSTATUS_BAT["enable"]=true
-        SL_WSTATUS_BAT["data"]="$SL_DISCHARGING${percent}%"
-        SL_WSTATUS_BAT["foreground"]=$SL_FG_RED
+        SL_WSTATUS_BAT[enable]=true
+        SL_WSTATUS_BAT[data]="$SL_DISCHARGING${percent}%"
+        SL_WSTATUS_BAT[foreground]=$SL_FG_RED
     }
 
 	return 0

@@ -20,10 +20,9 @@ EOL
 	}
 
 	if [ "$#" -eq 0 ]; then
-		mapfile text 
-		for ((i=0; i<${#text[@]}; i++)); do
-			echo -n "${text[i]}"
-		done
+        while IFS= read -r i; do
+			echo "${i}"
+        done
 	else
 		echo "$@"
 	fi
@@ -67,10 +66,9 @@ EOL
 		if [ "$#" = 1 ]; then
 			# color code valid?
 			if [ "$1" -ge 0 -a "$1" -lt $SL_TERM_COLORS ]; then
-				mapfile text
-				for ((i=0; i<${#text[@]}; i++)); do
-					echo -n "${SL_TERM_COLORS_VALUES[$1]}${text[i]}$SL_TERM_RESET"
-				done
+                while IFS= read -r i; do
+					echo "${SL_TERM_COLORS_VALUES[$1]}${i}$SL_TERM_RESET"
+                done
 				return 0
 			else
 				echo You have to provide a valid color code!
@@ -152,10 +150,9 @@ EOL
 	if [ -t 1 -o "$inpipe" = "true" ]; then 
 		if [ "$#" = 0 ]; then
 			# take arguments from stdin
-			mapfile text
-			for ((i=0; i<${#text[@]}; i++)); do
-				echo -n "${color}${format}${text[i]}$SL_TERM_RESET"
-			done
+            while IFS= read -r i; do
+				echo "${color}${format}${i}$SL_TERM_RESET"
+            done
 		elif [ "$#" -gt 0 ]; then
 			# take arguments from $3 - $#
 			echo "${format}${color}${@}$SL_TERM_RESET"
@@ -164,7 +161,7 @@ EOL
 			return 1
 		fi
 	else
-		sl-blog $@
+		sl-blog "$@"
 	fi
 
 	return 0

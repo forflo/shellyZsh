@@ -6,31 +6,31 @@
 # example: [florian@kurerm]
 ##
 
-declare -Ag SL_WSTATUS_SESS
+typeset -Ag SL_WSTATUS_SESS
 
 SL_WSTATUS_SESS=(
-	["enable"]=true # if false it won't be shown
-	["foreground"]=$FG_GREEN
-	["background"]=""
-    ["format"]="" # Format (like blink or underline)
-	["data"]="" # string to show
-	["oldval"]="" #internal purpose
-    ["triggered"]="false" # only show if sl-notify-date returned 0
-    ["delimiter"]="[]" # ["data"] will be surrounded by these two
-    ["del_foreground"]="" # color the delimiter should have
-    ["del_background"]="" # color the delimiter should have
-    ["del_format"]="" 
-    ["trigger"]="false" # set to true if data and oldval changed
+	enable true
+	foreground "$FG_GREEN"
+	background ""
+    format ""
+	data ""
+	oldval ""
+    triggered "false"
+    delimiter "[]"
+    del_foreground ""
+    del_background ""
+    del_format ""
+    trigger "false"
 )
 
 ## 
 # returns 0 if something has changed
 # and 1 if not
 sl-notify-sess(){
-    [ "${SL_WSTATUS_SESS["oldval"]}" != "${SL_WSTATUS_SESS["data"]}" ] && {
-    	SL_WSTATUS_SESS["oldval"]=${SL_WSTATUS_SESS["data"]}		
-        SL_WSTATUS_SESS["trigger"]=true
-    } || SL_WSTATUS_SESS["trigger"]=false
+    [ "${SL_WSTATUS_SESS[oldval]}" != "${SL_WSTATUS_SESS[data]}" ] && {
+    	SL_WSTATUS_SESS[oldval]=${SL_WSTATUS_SESS[data]}
+        SL_WSTATUS_SESS[trigger]=true
+    } || SL_WSTATUS_SESS[trigger]=false
 }
 
 ##
@@ -58,7 +58,7 @@ sl-setdata-sess(){
 	[ "$TERM" = "screen" -a -z "$TMUX" ] && SL_WSTATUS_SESS["del_foreground"]="$SL_FG_CYAN"
     [ -z "$TMUX" -a "$TERM" != "screen" ] && SL_WSTATUS_SESS["del_foreground"]="$SL_FG_WHITE"
 
-	SL_WSTATUS_SESS["data"]="$user_cred$user$SL_TERM_RESET${at_cred}@$SL_TERM_RESET$hn_cred$hn$SL_TERM_RESET"
+	SL_WSTATUS_SESS[data]="$user_cred$user$SL_TERM_RESET${at_cred}@$SL_TERM_RESET$hn_cred$hn$SL_TERM_RESET"
     
 	return 0
 }

@@ -1,6 +1,6 @@
 SL_DELIMITER=""
-SL_WIDGETCONF=~/repos/git/shellyCode/shell/widgets/wconf.sh
-SL_WIDGET_DIR=~/repos/git/shellyCode/shell/widgets
+SL_WIDGETCONF=~/repos/git/shellyZsh/shell/widgets/wconf.zsh
+SL_WIDGET_DIR=~/repos/git/shellyZsh/shell/widgets
 #EDIT 13.Dez.2013
 #Widget should not be seen if no useful information is available
 #This behaviour is changeable
@@ -18,17 +18,17 @@ sl-load-widgets(){
 }
 
 sl-print-notify(){
-    for widget in ${!SL_WIDGETS_STATUS[*]}; do
+    for widget in ${(k)SL_WIDGETS_STATUS}; do
         local widget_arr=${SL_WIDGETS_STATUS[$widget]}
         
-        echo $(eval "echo \${${widget_arr}[\"data\"]}") 
-        echo $(eval "echo \${${widget_arr}[\"oldval\"]}") 
+        echo $(eval "echo \${${widget_arr}[data]}") 
+        echo $(eval "echo \${${widget_arr}[oldval]}") 
 
     done
 }
 
 sl-update-widgets(){
-    for widget in ${!SL_WIDGETS_STATUS[*]}; do
+    for widget in ${(k)SL_WIDGETS_STATUS[*]}; do
         local update_func=${SL_WIDGETS_SETDATA[$widget]}
         local notify_func=${SL_WIDGETS_NOTIFY[$widget]}
 
@@ -42,9 +42,34 @@ sl-update-widgets(){
 sl-get-prompt(){
     local begin="$SL_TLC"
     local widgets="$(sl-get-widgets)"
-    local end="$SL_BLC$SL_HL["
+    local end="$SL_BLC$SL_HL""["
     
     echo "$begin$widgets\n$end"
+}
+
+sl-print-widget-status(){
+    local index=1
+
+    for widget in ${(k)SL_WIDGETS_STATUS[*]}; do
+        local widget_arr=${SL_WIDGETS_STATUS[$widget]}
+        echo $widget_arr:
+
+        echo data: $(eval "echo \${${widget_arr}[data]}") 
+        echo foreground: $(eval "echo \${${widget_arr}[foreground]}") $SL_TERM_RESET
+        echo background: $(eval "echo \${${widget_arr}[background]}") $SL_TERM_RESET
+        echo enable: $(eval "echo \${${widget_arr}[enable]}")
+        echo delimiter: $(eval "echo \${${widget_arr}[delimiter]}")  
+        echo triggered: $(eval "echo \${${widget_arr}[triggered]}")
+        echo del_foreground: $(eval "echo \${${widget_arr}[del_foreground]}") $SL_TERM_RESET
+        echo del_background: $(eval "echo \${${widget_arr}[del_background]}") $SL_TERM_RESET
+        echo del_format: $(eval "echo \${${widget_arr}[del_format]}") $SL_TERM_RESET
+        echo trigger: $(eval "echo \${${widget_arr}[trigger]}")
+        echo format: $(eval "echo \${${widget_arr}[format]}") $SL_TERM_RESET
+
+        ((index++))
+    done
+
+    return
 }
 
 sl-get-widgets(){
@@ -61,27 +86,27 @@ sl-get-widgets(){
     local widget_del_fmt=()
     local widget_format=()
     local widget_trigger=()
-    local index=0
+    local index=1
 
-    for widget in ${!SL_WIDGETS_STATUS[*]}; do
+    for widget in ${(k)SL_WIDGETS_STATUS[*]}; do
         local widget_arr=${SL_WIDGETS_STATUS[$widget]}
 
-        widget_data[index]=$(eval "echo \${${widget_arr}[\"data\"]}") 
-        widget_foreground[index]=$(eval "echo \${${widget_arr}[\"foreground\"]}")
-        widget_background[index]=$(eval "echo \${${widget_arr}[\"background\"]}")
-        widget_enable[index]=$(eval "echo \${${widget_arr}[\"enable\"]}")
-        widget_delimiter[index]=$(eval "echo \${${widget_arr}[\"delimiter\"]}")  
-        widget_triggered[index]=$(eval "echo \${${widget_arr}[\"triggered\"]}")
-        widget_del_fg[index]=$(eval "echo \${${widget_arr}[\"del_foreground\"]}")
-        widget_del_bg[index]=$(eval "echo \${${widget_arr}[\"del_background\"]}")
-        widget_del_fmt[index]=$(eval "echo \${${widget_arr}[\"del_format\"]}")
-        widget_trigger[index]=$(eval "echo \${${widget_arr}[\"trigger\"]}")
-        widget_format[index]=$(eval "echo \${${widget_arr}[\"format\"]}")
+        widget_data[index]=$(eval "echo \${${widget_arr}[data]}") 
+        widget_foreground[index]=$(eval "echo \${${widget_arr}[foreground]}")
+        widget_background[index]=$(eval "echo \${${widget_arr}[background]}")
+        widget_enable[index]=$(eval "echo \${${widget_arr}[enable]}")
+        widget_delimiter[index]=$(eval "echo \${${widget_arr}[delimiter]}")  
+        widget_triggered[index]=$(eval "echo \${${widget_arr}[triggered]}")
+        widget_del_fg[index]=$(eval "echo \${${widget_arr}[del_foreground]}")
+        widget_del_bg[index]=$(eval "echo \${${widget_arr}[del_background]}")
+        widget_del_fmt[index]=$(eval "echo \${${widget_arr}[del_format]}")
+        widget_trigger[index]=$(eval "echo \${${widget_arr}[trigger]}")
+        widget_format[index]=$(eval "echo \${${widget_arr}[format]}")
 
         ((index++))
     done
 
-    for ((i=0; i<$index; i++)); do
+    for ((i=1; i<=$index; i++)); do
         local d=${widget_data[i]} e=${widget_enable[i]} \
               f=${widget_foreground[i]} b=${widget_background[i]} \
               del=${widget_delimiter[i]} trigger=${widget_trigger[i]} \
@@ -100,7 +125,7 @@ sl-get-widgets(){
         # echo triggered:$t notify=$n data=$d
         [ "$e" = "true" -a "$t" = "false" ] && append="true"
         [ "$e" = "true" -a "$t" = "true" -a "$trigger" = "true" ] && append="true"
-
+    
         [ $append = "true" ] && {
             widget_result+="$SL_DELIMITER\[$del_fmt$del_fg$del_bg\]${del_01}\[$SL_TERM_RESET\]"
             widget_result+="\[$f$b$fmt\]$d\[$SL_TERM_RESET\]"

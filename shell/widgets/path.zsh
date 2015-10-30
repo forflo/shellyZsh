@@ -1,38 +1,38 @@
-declare -Ag SL_WSTATUS_PATH
+typeset -Ag SL_WSTATUS_PATH
 
 SP_LP_MARK_SHORTEN_PATH="$SL_CONT"
 SP_LP_PATH_LENGTH=17
 SL_LP_PATH_KEEP=1
 
 SL_WSTATUS_PATH=(
-	["enable"]=true # if false it won't be shown
-	["foreground"]=$FG_GREEN
-	["background"]=""
-    ["format"]="" # Format (like blink or underline)
-	["data"]="" # string to show
-	["oldval"]="" #internal purpose
-    ["triggered"]="true" # only show if sl-notify-date returned 0
-    ["delimiter"]="<>" # ["data"] will be surrounded by these two
-    ["del_foreground"]="" # color the delimiter should have
-    ["del_background"]="" # color the delimiter should have
-    ["del_format"]="" 
-    ["trigger"]="false" # set to true if data and oldval changed
+	enable true # if false it won't be shown
+	foreground "$FG_GREEN"
+	background ""
+    format "" # Format (like blink or underline)
+	data "" # string to show
+	oldval "" #internal purpose
+    triggered "true" # only show if sl-notify-date returned 0
+    delimiter "<>" # ["data"] will be surrounded by these two
+    del_foreground "" # color the delimiter should have
+    del_background "" # color the delimiter should have
+    del_format "" 
+    trigger "false" # set to true if data and oldval changed
 )
 
 ## 
 # returns 0 if something has changed
 # and 1 if not
 sl-notify-path(){
-    [ "${SL_WSTATUS_PATH["oldval"]}" != "${SL_WSTATUS_PATH["data"]}" ] && {
-    	SL_WSTATUS_PATH["oldval"]=${SL_WSTATUS_PATH["data"]}		
-        SL_WSTATUS_PATH["trigger"]=true
-    } || SL_WSTATUS_PATH["trigger"]=false
+    [ "${SL_WSTATUS_PATH[oldval]}" != "${SL_WSTATUS_PATH[data]}" ] && {
+    	SL_WSTATUS_PATH[oldval]=${SL_WSTATUS_PATH[data]}		
+        SL_WSTATUS_PATH[trigger]=true
+    } || SL_WSTATUS_PATH[trigger]=false
 }
 
 ##
 # sets the string for this widget
 sl-setdata-path(){
-	SL_WSTATUS_PATH["data"]="$(sl-lp-shorten-path)"
+	SL_WSTATUS_PATH[data]="$(sl-lp-shorten-path)"
 	return 0
 }
 

@@ -10,8 +10,8 @@ export SL_FG_BLUE=$(tput setaf 4)
 export SL_FG_PURPLE=$(tput setaf 5)
 export SL_FG_CYAN=$(tput setaf 6)
 export SL_FG_WHITE=$(tput setaf 7)
-export SL_FG_ARR=(SL_FG_BLACK SL_FG_RED SL_FG_GREEN SL_FG_YELLOW SL_FG_BLUE \
-                SL_FG_PURPLE SL_SLFG_CYAN SL_FG_WHITE)
+export SL_FG_ARR=($SL_FG_BLACK $SL_FG_RED $SL_FG_GREEN $SL_FG_YELLOW $SL_FG_BLUE \
+                $SL_FG_PURPLE $SL_FG_CYAN $SL_FG_WHITE)
 
 #Background
 export SL_BG_BLACK=$(tput setab 0)
@@ -22,16 +22,14 @@ export SL_BG_BLUE=$(tput setab 4)
 export SL_BG_PURPLE=$(tput setab 5)
 export SL_BG_CYAN=$(tput setab 6)
 export SL_BG_WHITE=$(tput setab 7)
-export SL_BG_ARR=(SL_BG_BLACK SL_BG_RED SL_BG_GREEN SL_BG_YELLOW SL_BG_BLUE \
-                SL_BG_PURPLE SL_BG_CYAN SL_BG_WHITE)
+export SL_BG_ARR=($SL_BG_BLACK $SL_BG_RED $SL_BG_GREEN $SL_BG_YELLOW $SL_BG_BLUE \
+                $SL_BG_PURPLE $SL_BG_CYAN $SL_BG_WHITE)
 
 #Extended Color-Values
 export SL_TERM_COLORS=$(tput colors)
-export SL_TERM_COLORS_VALUES=
+export SL_TERM_COLORS_VALUES=()
 for ((i=1; i<=$SL_TERM_COLORS; i++)); do
-	SL_TERM_COLORS_VALUES[i]="$(tput setaf $i)" # innerhalb von [] müssen variablen nicth
-						 # mit $ gekennzeichnet werden, da es sich
-						 # hier um einen arithmetischen ausdruck handelt!
+	SL_TERM_COLORS_VALUES[i]="$(tput setaf $((i-1)))"
 done
 
 #Formatting
